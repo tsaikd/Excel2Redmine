@@ -30,8 +30,8 @@ var banner = [
 	].join("\n"),
 	paths = {
 		"tmpl": [root+"/src/**/*.html"],
-		"js": ["!**/*.tmp.js", "!**/*.test.js", "!/src/**/*.min.js", root+"/src/**/*.js"],
-		"css": [root+"/src/**/*.css"],
+		"js": ["!**/*.tmp.js", "!**/*.test.js", "!"+root+"/src/**/*.min.js", root+"/src/**/*.js"],
+		"css": ["!"+root+"/src/**/*.min.css", root+"/src/**/*.css"],
 		"test": ["!**/*.tmp.js",
 			root+"/lib/angular/angular.js",
 			root+"/lib/angular-mocks/angular-mocks.js",
@@ -86,7 +86,7 @@ gulp.task("tmpl", function(done) {
 	gulp.src(paths.tmpl)
 		.pipe(templatecache("angular-template.tmp.js", {
 			module: ngModule,
-			root: "directive"
+			root: "src"
 		}))
 		.pipe(gulp.dest(root+"/src/"))
 		.pipe(connect.reload())

@@ -1,0 +1,43 @@
+<md-content layout="column" layout-margin style="max-height: 100vh; overflow: auto;">
+	<div layout="row">
+		<input type="file" ng-files-model="excelFile">
+		<select ng-show="projectData.projects.length"
+			ng-options="idx as project.name for (idx, project) in projectData.projects"
+			ng-model="projectData.selectIdx">
+		</select>
+		<select ng-show="trackerData.trackers.length"
+			ng-options="idx as tracker.name for (idx, tracker) in trackerData.trackers"
+			ng-model="trackerData.selectIdx">
+		</select>
+		<select ng-show="issueStatusData.issue_statuses.length"
+			ng-options="idx as status.name for (idx, status) in issueStatusData.issue_statuses"
+			ng-model="issueStatusData.selectIdx">
+		</select>
+		<select ng-show="priorityData.issue_priorities.length"
+			ng-options="idx as priority.name for (idx, priority) in priorityData.issue_priorities"
+			ng-model="priorityData.selectIdx">
+		</select>
+	</div>
+	<md-tabs md-selected="selectedSheet" ng-show="wbmap[0]" style="margin-top: 1em;">
+		<md-tab ng-repeat="tab in wbmap" label="{{tab.name}}">
+			<table class="table-border" style="min-width: 100%; margin-top: 0.5em;">
+				<tbody>
+					<tr>
+						<td></td>
+						<th ng-repeat="x in tab.xaxis" style="text-align: center;">
+							<div>{{x}}</div>
+						</th>
+					</tr>
+					<tr ng-repeat="y in tab.yaxis">
+						<td>
+							<div>{{y}}</div>
+						</td>
+						<td ng-repeat="x in tab.xaxis">
+							<div>{{tab.data[x][y]}}</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</md-tab>
+	</md-tabs>
+</md-content>
