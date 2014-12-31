@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-TW" ng-app="Excel2Redmine">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="Pure html tools to import excel file to redmine">
+		<title>Excel to Redmine</title>
+		<link rel="shortcut icon" href="favicon.ico">
+		<link rel="stylesheet" href="lib/fontawesome/css/font-awesome.min.css">
+		<!-- build:css src/index/main.min.css -->
+		<link rel="stylesheet" href="lib/angular-material/angular-material.css">
+		<link rel="stylesheet" href="lib/csshake/csshake.css">
+		<link rel="stylesheet" href="src/index/index.css">
+		<!-- endbuild -->
+		<!-- build:js src/index/main.min.js -->
+		<script src="lib/angular/angular.js"></script>
+		<script src="lib/angular-animate/angular-animate.js"></script>
+		<script src="lib/angular-aria/angular-aria.js"></script>
+		<script src="lib/angular-local-storage/dist/angular-local-storage.js"></script>
+		<script src="lib/angular-material/angular-material.js"></script>
+		<script src="lib/angular-translate/angular-translate.js"></script>
+		<script src="lib/angular-ui-router/release/angular-ui-router.js"></script>
+		<script src="lib/hammerjs/hammer.js"></script>
+		<script src="src/config/app.js"></script>
+		<script src="src/config/locale.js"></script>
+		<script src="src/index/index.js"></script>
+		<!--
+		<script src="src/angular-template.tmp.js"></script>
+		-->
+		<!-- endbuild -->
+	</head>
+	<body ng-controller="IndexCtrl" style="padding: 10px;">
+		<div ng-show="!!loading" style="position: fixed; top: 0px; bottom: 0px; left: 0px; right: 0px; background-color: white;">
+			<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+				<div class="shake shake-constant shake-slow" style="text-align: center;">
+					<div>
+						<img src="favicon.ico" style="max-width: 100%; max-height: 100%; object-fit: contain; width: 64px; height: 64px;"/>
+					</div>
+					<div style="margin-top: 0.5em;">Excel to Redmine</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

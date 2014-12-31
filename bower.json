@@ -1,0 +1,28 @@
+{
+  "name": "Excel2Redmine",
+  "version": "0.0.1",
+  "description": "Pure html tools to import excel file to redmine",
+  "dependencies": {
+    "angular": "*",
+    "angular-material": "*",
+    "angular-translate": "2.4.2",
+    "angular-local-storage": "*",
+    "angular-ui-router": "*",
+    "csshake": "*",
+    "fontawesome": "*"
+  },
+  "devDependencies": {
+    "angular-mocks": "*"
+  },
+  "authors": [
+    "tsaikd <tsaikd@gmail.com>"
+  ],
+  "license": "LGPLv3",
+  "homepage": "http://tsaikd.github.io/Excel2Redmine/",
+  "keywords": [
+    "Redmine"
+  ],
+  "main": [
+    "index.html"
+  ]
+}
