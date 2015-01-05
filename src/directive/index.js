@@ -1,8 +1,8 @@
 app
 
 .controller("indexCtrl"
-	, [       "$scope", "Redmine"
-	, function($scope,   Redmine) {
+	, [       "$scope", "$state", "$mdToast", "$filter", "Redmine", "Loading"
+	, function($scope,   $state,   $mdToast,   $filter,   Redmine,   Loading) {
 
 	$scope.excelFile = [];
 	$scope.wbmap = [];
@@ -97,6 +97,22 @@ app
 	};
 
 	$scope.errMsg = function(data) {
+		if (data.data === undefined && data.status === 404) {
+			// redmine config incorrect
+			if (!Loading.isLoading("ErrorConfig")) {
+				Loading.add("ErrorConfig");
+				$mdToast.show(
+					$mdToast.simple()
+						.content($filter("translate")("Connect to Redmine server failed, please check config."))
+						.position("top right")
+						.hideDelay(3000)
+				).finally(function() {
+					Loading.del("ErrorConfig");
+				});
+				$state.go("config");
+			}
+			return;
+		}
 		// TODO
 		console.error(data);
 	};
