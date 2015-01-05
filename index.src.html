@@ -42,6 +42,7 @@
 		<script src="src/service/redmine_common.js"></script>
 		<script src="src/service/redmine_issue.js"></script>
 		<script src="src/service/redmine_project.js"></script>
+		<script src="src/service/version.js"></script>
 
 		<script src="src/index/index.js"></script>
 		<!--
@@ -59,12 +60,17 @@
 					</div>
 				</div>
 			</md-button>
-			<md-content style="margin-top: 20px;">
+			<md-content flex style="margin-top: 20px;">
 				<div layout="column">
 					<md-button ng-click="showLangBottomSheet($event)">Language</md-button>
 					<md-button href="#/config" translate>Config</md-button>
 				</div>
 			</md-content>
+			<div style="text-align: center; margin-bottom: 0.3em;">
+				<span translate>Version</span>
+				<span>:</span>
+				<span>{{Version.version}}</span>
+			</div>
 		</div>
 		<div flex>
 			<div ui-view></div>

@@ -9,6 +9,7 @@ app
 	var zh_tw = {
 		"Config": "設定",
 		"Import": "匯入",
+		"Version": "版本",
 
 		// key
 		"subject": "主旨",

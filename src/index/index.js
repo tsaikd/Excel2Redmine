@@ -1,8 +1,10 @@
 app
 
 .controller("IndexCtrl"
-	, [       "$scope", "$mdBottomSheet", "$translate"
-	, function($scope,   $mdBottomSheet,   $translate) {
+	, [       "$scope", "$mdBottomSheet", "$translate", "Version"
+	, function($scope,   $mdBottomSheet,   $translate,   Version) {
+
+	$scope.Version = Version;
 
 	$scope.showLangBottomSheet = function($event) {
 		$mdBottomSheet.show({
