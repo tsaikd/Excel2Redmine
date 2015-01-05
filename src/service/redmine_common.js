@@ -9,15 +9,20 @@ app
 	RedmineCommon.prototype.jsonp = function(opts) {
 		var $scope = this;
 		var deferred = $q.defer();
+		var params;
 
 		opts = angular.extend({
+			method: "JSONP",
 			url: "",
-			params: {}
+			params: {},
+			data: ""
 		}, opts);
 
-		var params = angular.extend({
-			callback: "JSON_CALLBACK"
-		}, opts.params);
+		if (opts.method == "JSONP") {
+			params = angular.extend({
+				callback: "JSON_CALLBACK"
+			}, opts.params);
+		}
 
 		// hack for jsonp
 		// http://stackoverflow.com/questions/16560843/json-callback-not-found-using-jsonp
@@ -33,11 +38,12 @@ app
 		};
 
 		$http({
-			method: "JSONP",
-			url: Config.url + opts.url,
+			method: opts.method,
+			url: Config.url.replace(/\/*$/, "") + opts.url,
 			params: params,
+			data: opts.data,
 			headers: {
-				// "X-Redmine-API-Key": Config.apikey
+				"X-Redmine-API-Key": Config.apikey
 			}
 		})
 		.success(function(data, status, headers, config) {

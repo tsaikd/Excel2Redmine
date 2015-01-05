@@ -25,6 +25,14 @@ app
 		return RedmineCommon.jsonp(opts);
 	};
 
+	Redmine.prototype.customFields = function(opts) {
+		opts = angular.extend({
+			url: "/custom_fields.json"
+		}, opts);
+
+		return RedmineCommon.jsonp(opts);
+	};
+
 	return new Redmine();
 }])
 

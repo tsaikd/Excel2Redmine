@@ -8,8 +8,7 @@ app
 
 	RedmineIssue.prototype.list = function(opts) {
 		opts = angular.extend({
-			url: "/issues.json",
-			params: {}
+			url: "/issues.json"
 		}, opts);
 
 		return RedmineCommon.jsonp(opts);
@@ -17,8 +16,16 @@ app
 
 	RedmineIssue.prototype.status = function(opts) {
 		opts = angular.extend({
-			url: "/issue_statuses.json",
-			params: {}
+			url: "/issue_statuses.json"
+		}, opts);
+
+		return RedmineCommon.jsonp(opts);
+	};
+
+	RedmineIssue.prototype.create = function(opts) {
+		opts = angular.extend({
+			method: "POST",
+			url: "/issues.json"
 		}, opts);
 
 		return RedmineCommon.jsonp(opts);

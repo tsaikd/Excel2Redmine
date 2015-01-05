@@ -2,42 +2,33 @@
 	<div layout="row">
 		<input type="file" ng-files-model="excelFile">
 		<select ng-show="projectData.projects.length"
-			ng-options="idx as project.name for (idx, project) in projectData.projects"
+			ng-options="idx as project.fullname for (idx, project) in projectData.projects"
 			ng-model="projectData.selectIdx">
 		</select>
-		<select ng-show="trackerData.trackers.length"
-			ng-options="idx as tracker.name for (idx, tracker) in trackerData.trackers"
-			ng-model="trackerData.selectIdx">
-		</select>
-		<select ng-show="issueStatusData.issue_statuses.length"
-			ng-options="idx as status.name for (idx, status) in issueStatusData.issue_statuses"
-			ng-model="issueStatusData.selectIdx">
-		</select>
-		<select ng-show="priorityData.issue_priorities.length"
-			ng-options="idx as priority.name for (idx, priority) in priorityData.issue_priorities"
-			ng-model="priorityData.selectIdx">
-		</select>
+		<md-button ng-click="import($event)" class="md-raised md-primary" translate>Import</md-button>
 	</div>
 	<md-tabs md-selected="selectedSheet" ng-show="wbmap[0]" style="margin-top: 1em;">
-		<md-tab ng-repeat="tab in wbmap" label="{{tab.name}}">
-			<table class="table-border" style="min-width: 100%; margin-top: 0.5em;">
-				<tbody>
-					<tr>
-						<th></th>
-						<th ng-repeat="x in tab.xaxis" style="text-align: center;">
-							<div>{{x}}</div>
-						</th>
-					</tr>
-					<tr ng-repeat="y in tab.yaxis">
-						<th style="text-align: right; padding-right: 0.6em; width: 3.5em;">
-							<div>{{y}}</div>
-						</th>
-						<td ng-repeat="x in tab.xaxis">
-							<div>{{tab.data[x][y]}}</div>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+		<md-tab ng-repeat="tab in wbmap" label="{{tab.name}}" md-on-select="setCurSheet(tab)">
+			<md-content>
+				<table class="table-border sheet" style="min-width: 100%; margin-top: 0.5em;">
+					<tbody>
+						<tr>
+							<th></th>
+							<th ng-repeat="x in tab.xaxis" style="text-align: center;">
+								<div>{{x}}</div>
+							</th>
+						</tr>
+						<tr ng-repeat="y in tab.yaxis">
+							<th style="width: 5em;">
+								<md-checkbox ng-model="tab.yinfo[y].created" ng-class="{'md-warn': tab.yinfo[y].error}" title="{{tab.yinfo[y].error}}" aria-label="Created" disabled>{{y}}</md-checkbox>
+							</th>
+							<td ng-repeat="x in tab.xaxis" ng-class="{'header-exist': tab.xinfo[x].exist, 'text-valid': tab.data[x][y].valid === true, 'text-invalid': tab.data[x][y].valid === false}">
+								<div style="white-space: pre;">{{tab.data[x][y].value}}</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</md-content>
 		</md-tab>
 	</md-tabs>
 </md-content>

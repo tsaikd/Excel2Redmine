@@ -8,6 +8,19 @@ app
 
 	var zh_tw = {
 		"Config": "設定",
+		"Import": "匯入",
+
+		// key
+		"subject": "主旨",
+		"description": "概述",
+		// enum
+		"tracker_id": "追蹤標籤",
+		"status_id": "狀態",
+		"priority_id": "優先權",
+		// date
+		"start_date": "開始日期",
+		"due_dae": "完成日期",
+
 		"Connect to Redmine server failed, please check config.": "Redmine 連線失敗，請檢查相關設定。"
 	};
 

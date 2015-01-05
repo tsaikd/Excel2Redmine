@@ -6,8 +6,30 @@
 .table-border td {
 	border: 1px solid;
 	padding: 0.2em 0.5em;
+	background: #eee;
 }
 
 .table-border tr:nth-child(2) td {
-	background: #ccc;
+	background: #ee9;
+}
+
+.table-border tr:nth-child(2) td.header-exist {
+	background: #5b5;
+}
+
+.table-border td.text-valid {
+	background: #9e9;
+}
+
+.table-border td.text-invalid {
+	background: #ebb;
+}
+
+/* hack angular-material css */
+.sheet md-checkbox.md-default-theme.md-warn.md-checked .md-icon {
+	background-color: rgba(244,67,54,0.87);
+}
+
+.sheet md-checkbox.md-default-theme.md-checked .md-icon {
+	background-color: rgba(102, 187, 106, 0.87);
 }
