@@ -1,11 +1,13 @@
 
 .table-border {
-	border: 1px solid;
-	border-spacing: 0px;
+	border-collapse: collapse;
 }
 
-.table-border th,
 .table-border td {
 	border: 1px solid;
-	padding: 0.1em 0.5em;
+	padding: 0.2em 0.5em;
+}
+
+.table-border tr:nth-child(2) td {
+	background: #ccc;
 }
