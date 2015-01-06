@@ -1,34 +1,36 @@
-<md-content layout="column" layout-margin style="max-height: 100vh; overflow: auto;">
-	<div layout="row">
+<div layout="column" style="height: 100vh; overflow: auto;">
+	<div layout="row" layout-margin>
 		<input type="file" ng-files-model="excelFile">
 		<select ng-show="projectData.projects.length"
 			ng-options="idx as project.fullname for (idx, project) in projectData.projects"
 			ng-model="projectData.selectIdx">
 		</select>
-		<md-button ng-click="import($event)" class="md-raised md-primary" translate>Import</md-button>
+		<md-button ng-click="import($event)" class="md-raised md-primary" style="margin-left: 0.5em;" translate>Import</md-button>
 	</div>
-	<md-tabs md-selected="selectedSheet" ng-show="wbmap[0]" style="margin-top: 1em;">
-		<md-tab ng-repeat="tab in wbmap" label="{{tab.name}}" md-on-select="setCurSheet(tab)">
-			<md-content>
-				<table class="table-border sheet" style="min-width: 100%; margin-top: 0.5em;">
-					<tbody>
-						<tr>
-							<th></th>
-							<th ng-repeat="x in tab.xaxis" style="text-align: center;">
-								<div>{{x}}</div>
-							</th>
-						</tr>
-						<tr ng-repeat="y in tab.yaxis">
-							<th style="width: 5em;">
-								<md-checkbox ng-model="tab.yinfo[y].created" ng-class="{'md-warn': tab.yinfo[y].error}" title="{{tab.yinfo[y].error}}" aria-label="Created" disabled>{{y}}</md-checkbox>
-							</th>
-							<td ng-repeat="x in tab.xaxis" ng-class="{'header-exist': tab.xinfo[x].exist, 'text-valid': tab.data[x][y].valid === true, 'text-invalid': tab.data[x][y].valid === false}">
-								<div style="white-space: pre;">{{tab.data[x][y].value}}</div>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</md-content>
-		</md-tab>
-	</md-tabs>
-</md-content>
+	<div layout="row">
+		<md-tabs md-selected="selectedSheet" ng-show="wbmap[0]" md-align-tabs="bottom" layout-margin>
+			<md-tab ng-repeat="tab in wbmap" label="{{tab.name}}" md-on-select="setCurSheet(tab)">
+				<md-content>
+					<table class="table-border sheet" style="min-width: 100%; margin-top: 0.5em;">
+						<tbody>
+							<tr>
+								<th></th>
+								<th ng-repeat="x in tab.xaxis" style="text-align: center;">
+									<div>{{x}}</div>
+								</th>
+							</tr>
+							<tr ng-repeat="y in tab.yaxis">
+								<th style="width: 5em;">
+									<md-checkbox ng-model="tab.yinfo[y].created" ng-class="{'md-warn': tab.yinfo[y].error}" title="{{tab.yinfo[y].error}}" aria-label="Created" disabled>{{y}}</md-checkbox>
+								</th>
+								<td ng-repeat="x in tab.xaxis" ng-class="{'header-exist': tab.xinfo[x].exist, 'text-valid': tab.data[x][y].valid === true, 'text-invalid': tab.data[x][y].valid === false}">
+									<div style="white-space: pre;">{{tab.data[x][y].value}}</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</md-content>
+			</md-tab>
+		</md-tabs>
+	</div>
+</div>
