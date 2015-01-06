@@ -22,7 +22,8 @@ app
 		"start_date": "開始日期",
 		"due_dae": "完成日期",
 
-		"Connect to Redmine server failed, please check config.": "Redmine 連線失敗，請檢查相關設定。"
+		"Connect to Redmine server failed, please check config.": "Redmine 連線失敗，請檢查相關設定。",
+		"Unable to parse excel file, please check the file format is corrent.": "無法解析 Excel 檔案，請確認檔案格式是否正確。"
 	};
 
 	$translateProvider.translations("zh_tw", zh_tw);

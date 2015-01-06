@@ -328,10 +328,15 @@ app
 		var reader = new FileReader();
 		reader.onload = function(e) {
 			var data = e.target.result;
-			var wb = XLSX.read(data, {type: "binary"});
-			handleWorkbook(wb).then(function(data) {
-				deferred.resolve(data);
-			});
+			var wb;
+			try {
+				wb = XLSX.read(data, {type: "binary"});
+				handleWorkbook(wb).then(function(data) {
+					deferred.resolve(data);
+				});
+			} catch(e) {
+				deferred.reject(e);
+			}
 		};
 		reader.readAsBinaryString(file);
 

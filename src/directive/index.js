@@ -23,28 +23,50 @@ app
 		}
 		Excel.parseFile(file).then(function(sheets) {
 			$scope.wbmap = sheets;
+		}, function(e) {
+			$scope.errMsg(e);
 		});
 	};
+
+	/*
+	 * return true if show error message, false if message showing
+	 */
+	function showErrorMessage(message) {
+		if (!Loading.isLoading(message)) {
+			Loading.add(message);
+			$mdToast.show(
+				$mdToast.simple()
+					.content($filter("translate")(message))
+					.position("top right")
+					.hideDelay(3000)
+			).finally(function() {
+				Loading.del(message);
+			});
+			return true;
+		}
+		return false;
+	}
 
 	$scope.errMsg = function(data) {
 		if (data.data === undefined && data.status === 404) {
 			// redmine config incorrect
-			if (!Loading.isLoading("ErrorConfig")) {
-				Loading.add("ErrorConfig");
-				$mdToast.show(
-					$mdToast.simple()
-						.content($filter("translate")("Connect to Redmine server failed, please check config."))
-						.position("top right")
-						.hideDelay(3000)
-				).finally(function() {
-					Loading.del("ErrorConfig");
-				});
+			if (showErrorMessage("Connect to Redmine server failed, please check config.")) {
 				$state.go("config");
 			}
 			return;
 		}
-		// TODO
-		console.error(data);
+		if (data.message) {
+			switch (data.message) {
+			case "Corrupted zip : can't find end of central directory":
+				showErrorMessage("Unable to parse excel file, please check the file format is corrent.");
+				break;
+			default:
+				showErrorMessage(data.message);
+				break;
+			}
+			return;
+		}
+		console.error("unknown error: " + data);
 	};
 
 	$scope.projectData = {};
