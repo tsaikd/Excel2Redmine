@@ -6,42 +6,84 @@ app
 
 	function Excel() {}
 
+	var redmineParams = {
+		limit: 5000
+	};
 	var cache = {};
 
 	function loadRedmine() {
 		var deferred = $q.defer();
 
-		if (cache["loadRedmine"]) {
-			deferred.resolve(cache["loadRedmine"]);
+		var cachekey = "loadRedmine";
+		if (cache[cachekey]) {
+			deferred.resolve(cache[cachekey]);
 			return deferred.promise;
 		}
 
 		$q.all([
-			Redmine.trackers(),
-			Redmine.Issue.status(),
-			Redmine.priorities(),
-			Redmine.customFields()
+			Redmine.trackers({ params: redmineParams }),
+			Redmine.Issue.status({ params: redmineParams }),
+			Redmine.priorities({ params: redmineParams }),
+			Redmine.customFields({ params: redmineParams })
 		]).then(function(data) {
-			cache["loadRedmine"] = {
+			cache[cachekey] = {
 				trackers: data[0].data.trackers,
 				issue_statuses: data[1].data.issue_statuses,
 				issue_priorities: data[2].data.issue_priorities,
 				custom_fields: data[3].data.custom_fields
 			};
-			deferred.resolve(cache["loadRedmine"]);
+			deferred.resolve(cache[cachekey]);
 		}, function(data) {
 			deferred.reject(data);
 		});
 
 		return deferred.promise;
 	};
-	// cache redmine request
+	// preload and cache redmine request
 	loadRedmine();
 
-	function genFieldInfos() {
+	function loadProjectInfo(projectId) {
 		var deferred = $q.defer();
 
-		loadRedmine().then(function(data) {
+		if (!projectId) {
+			deferred.reject({
+				message: "invalid project id"
+			});
+			return deferred.promise;
+		}
+
+		var cachekey = "loadProjectInfo/" + projectId;
+		if (cache[cachekey]) {
+			deferred.resolve(cache[cachekey]);
+			return deferred.promise;
+		}
+
+		$q.all([
+			Redmine.Project.categories({ id:projectId, params: redmineParams }),
+			Redmine.Project.memberships({ id:projectId, params: redmineParams }),
+			Redmine.Project.versions({ id:projectId, params: redmineParams })
+		]).then(function(data) {
+			cache[cachekey] = {
+				issue_categories: data[0].data.issue_categories,
+				memberships: data[1].data.memberships,
+				versions: data[2].data.versions
+			};
+			deferred.resolve(cache[cachekey]);
+		}, function(data) {
+			deferred.reject(data);
+		});
+
+		return deferred.promise;
+	}
+
+	function genFieldInfos(projectId) {
+		var deferred = $q.defer();
+
+		$q.all([
+			loadRedmine(),
+			loadProjectInfo(projectId)
+		]).then(function(data) {
+			data = angular.extend({}, data[0], data[1]);
 			var fieldInfos = [
 				{
 					key: "subject",
@@ -87,6 +129,56 @@ app
 					names: ["Due Date", "完成日期"],
 					field_format: "date",
 					nullable: true
+				},
+				{
+					key: "category_id",
+					names: ["Category", "分類"],
+					field_format: "enum",
+					nullable: true,
+					possible_values: data["issue_categories"]
+				},
+				{
+					key: "fixed_version_id",
+					names: ["Target version", "版本"],
+					field_format: "enum",
+					nullable: true,
+					possible_values: data["versions"]
+				},
+				{
+					key: "assigned_to_id",
+					names: ["Assignee", "分派給"],
+					field_format: "enum",
+					nullable: true,
+					possible_values: data["memberships"].map(function(membership) {
+						return membership.user;
+					})
+				},
+				{
+					key: "parent_issue_id",
+					names: ["Parent task", "父問題"],
+					field_format: "int",
+					nullable: true
+				},
+				{
+					key: "watcher_user_ids",
+					names: ["Watchers", "監看者"],
+					field_format: "enum",
+					nullable: true,
+					possible_values: data["memberships"].map(function(membership) {
+						return membership.user;
+					})
+				},
+				{
+					key: "is_private",
+					names: ["Private", "私人"],
+					field_format: "bool",
+					nullable: true
+				},
+				{
+					key: "estimated_hours",
+					names: ["Estimated time", "預估工時"],
+					field_format: "int",
+					nullable: true
 				}
 			];
 			data["custom_fields"].forEach(function(field) {
@@ -97,12 +189,14 @@ app
 				}));
 			});
 			deferred.resolve(fieldInfos);
+		}, function(data) {
+			deferred.reject(data);
 		});
 
 		return deferred.promise;
 	}
 
-	function genFieldMap() {
+	function genFieldMap(projectId) {
 		var deferred = $q.defer();
 		var fieldMap = {};
 
@@ -129,7 +223,7 @@ app
 			},
 			"int": function(field, value) {
 				value = +value;
-				return value === NaN ? undefined : value;
+				return isNaN(value) ? undefined : value;
 			},
 			"list": function(field, value) {
 				return value;
@@ -176,7 +270,7 @@ app
 			}
 		};
 
-		genFieldInfos().then(function(fieldInfos){
+		genFieldInfos(projectId).then(function(fieldInfos){
 			fieldInfos.forEach(function(fieldInfo) {
 				fieldInfo.filter = field_filter_map[fieldInfo["field_format"]];
 				if (!fieldInfo.filter) {
@@ -187,6 +281,8 @@ app
 				});
 			});
 			deferred.resolve(fieldMap);
+		}, function(data) {
+			deferred.reject(data);
 		});
 
 		return deferred.promise;
@@ -289,14 +385,20 @@ app
 			sheet.yaxis.forEach(function(y) {
 				var data = sheet.data[x][y] = sheet.data[x][y] || {};
 				data.filtered = headerInfo.filter(headerInfo, data.value);
-				if (data.filtered) {
-					data.valid = true;
-				} else if (headerInfo.nullable) {
-					data.valid = true;
+				if (data.filtered === undefined) {
+					if (data.value == "") {
+						if (headerInfo.nullable) {
+							data.valid = true;
+						} else {
+							data.valid = false;
+						}
+					} else {
+						data.valid = false;
+					}
 				} else {
-					data.valid = false;
+					data.valid = true;
 				}
-				if (data.valid) {
+				if (!data.valid) {
 					sheet.stat.errorcount++;
 				}
 			});
@@ -305,10 +407,10 @@ app
 		return sheet;
 	}
 
-	function handleWorkbook(workbook) {
+	function handleWorkbook(workbook, projectId) {
 		var deferred = $q.defer();
 
-		genFieldMap().then(function(fieldMap) {
+		genFieldMap(projectId).then(function(fieldMap) {
 			var sheets = [];
 			workbook.SheetNames.forEach(function(sheetName) {
 				var sheet = handleWorkbookSheet(workbook.Sheets[sheetName], sheetName, fieldMap);
@@ -317,12 +419,14 @@ app
 				}
 			});
 			deferred.resolve(sheets);
+		}, function(data) {
+			deferred.reject(data);
 		});
 
 		return deferred.promise;
 	}
 
-	Excel.prototype.parseFile = function(file) {
+	Excel.prototype.parseFile = function(file, projectId) {
 		var deferred = $q.defer();
 
 		var reader = new FileReader();
@@ -331,8 +435,10 @@ app
 			var wb;
 			try {
 				wb = XLSX.read(data, {type: "binary"});
-				handleWorkbook(wb).then(function(data) {
+				handleWorkbook(wb, projectId).then(function(data) {
 					deferred.resolve(data);
+				}, function(data) {
+					deferred.reject(data);
 				});
 			} catch(e) {
 				deferred.reject(e);

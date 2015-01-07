@@ -21,7 +21,7 @@ app
 		if (!file) {
 			return;
 		}
-		Excel.parseFile(file).then(function(sheets) {
+		Excel.parseFile(file, $scope.projectData.projects[$scope.projectData.selectIdx].id).then(function(sheets) {
 			$scope.wbmap = sheets;
 		}, function(e) {
 			$scope.errMsg(e);
@@ -71,7 +71,7 @@ app
 
 	$scope.projectData = {};
 	$scope.reloadProjects = function() {
-		Redmine.Project.list().then(function(data) {
+		Redmine.Project.list({ params: { limit: 5000 } }).then(function(data) {
 			if (data.data.projects.length) {
 				data.data.projects.forEach(function(project) {
 					var fullname = project.name || "";
