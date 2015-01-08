@@ -25,7 +25,8 @@ app
 		"Connect to Redmine server failed, please check config.": "Redmine 連線失敗，請檢查相關設定。",
 		"Import {{okcount}} issues successfully, {{errorcount}} failed.": "匯入 {{okcount}} 筆資料成功， {{errorcount}} 筆資料失敗",
 		"Import nothing": "找不到可匯入的資料",
-		"Unable to parse excel file, please check the file format is corrent.": "無法解析 Excel 檔案，請確認檔案格式是否正確。"
+		"Unable to parse excel file, please check the file format is corrent.": "無法解析 Excel 檔案，請確認檔案格式是否正確。",
+		"User guide": "使用者說明文件"
 	};
 
 	$translateProvider.translations("zh_tw", zh_tw);
