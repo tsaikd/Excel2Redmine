@@ -10,7 +10,7 @@
 }
 
 .table-border tr:nth-child(2) td {
-	background: #ee9;
+	background: #dd7;
 }
 
 .table-border tr:nth-child(2) td.header-exist {
@@ -23,6 +23,10 @@
 
 .table-border td.text-invalid {
 	background: #ebb;
+}
+
+.table-border td.text-warn {
+	background: #eeb;
 }
 
 /* hack angular-material css */

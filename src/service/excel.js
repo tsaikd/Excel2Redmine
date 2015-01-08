@@ -179,6 +179,12 @@ app
 					names: ["Estimated time", "預估工時"],
 					field_format: "int",
 					nullable: true
+				},
+				{
+					key: "done_ratio",
+					names: ["% Done", "完成百分比"],
+					field_format: "int",
+					nullable: true
 				}
 			];
 			data["custom_fields"].forEach(function(field) {
@@ -220,7 +226,7 @@ app
 				return undefined;
 			},
 			"int": function(field, value) {
-				value = +value;
+				value = parseInt(value);
 				return isNaN(value) ? undefined : value;
 			},
 			"list": function(field, value) {
@@ -391,6 +397,17 @@ app
 						data.valid = false;
 					}
 				} else {
+					switch (headerInfo.field_format) {
+					case "date":
+					case "enum":
+					case "list":
+						break;
+					default:
+						if (data.value != data.filtered) {
+							data.warn = true;
+						}
+						break;
+					}
 					data.valid = true;
 				}
 				if (!data.valid) {

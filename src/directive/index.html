@@ -27,8 +27,13 @@
 								<th style="width: 5em;">
 									<md-checkbox ng-model="tab.yinfo[y].created" ng-class="{'md-warn': tab.yinfo[y].error}" title="{{tab.yinfo[y].error}}" aria-label="Created" disabled>{{y}}</md-checkbox>
 								</th>
-								<td ng-repeat="x in tab.xaxis" ng-class="{'header-exist': tab.xinfo[x].exist, 'text-valid': tab.data[x][y].valid === true, 'text-invalid': tab.data[x][y].valid === false}">
-									<div style="white-space: pre;">{{tab.data[x][y].value}}</div>
+								<td ng-repeat="x in tab.xaxis"
+									ng-class="{
+										'header-exist': tab.xinfo[x].exist,
+										'text-valid': tab.data[x][y].valid === true,
+										'text-invalid': tab.data[x][y].valid === false,
+										'text-warn': tab.data[x][y].warn === true}">
+									<div title="{{tab.data[x][y].filtered}}" style="white-space: pre;">{{tab.data[x][y].value}}</div>
 								</td>
 							</tr>
 						</tbody>
