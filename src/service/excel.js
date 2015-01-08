@@ -1,8 +1,8 @@
 app
 
 .factory("Excel"
-	, [       "$q", "$filter", "Redmine"
-	, function($q,   $filter,   Redmine) {
+	, [       "$q", "$filter", "Redmine", "Config"
+	, function($q,   $filter,   Redmine,   Config) {
 
 	function Excel() {}
 
@@ -224,15 +224,16 @@ app
 				return isNaN(value) ? undefined : value;
 			},
 			"list": function(field, value) {
-				return value;
-				/* check in server side
-				for (var i=0 ; i<field.possible_values.length ; i++) {
-					if (value === field.possible_values[i].value) {
-						return value;
+				if (Config.checkRedmineCustomFieldListInClient) {
+					for (var i=0 ; i<field.possible_values.length ; i++) {
+						if (value === field.possible_values[i].value) {
+							return value;
+						}
 					}
+					return undefined;
+				} else {
+					return value;
 				}
-				return undefined;
-				*/
 			},
 			"enum": function(field, value) {
 				var enumArray = field.possible_values;

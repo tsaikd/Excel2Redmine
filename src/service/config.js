@@ -10,7 +10,8 @@ app
 
 	var defConf = {
 		apikey: "",
-		url: "http://localhost"
+		url: "http://localhost",
+		checkRedmineCustomFieldListInClient: true
 	};
 
 	function Config() {}

@@ -22,6 +22,7 @@ app
 		"start_date": "開始日期",
 		"due_dae": "完成日期",
 
+		"Check Redmine Custom Field List": "檢查 Redmine 自定義欄位",
 		"Connect to Redmine server failed, please check config.": "Redmine 連線失敗，請檢查相關設定。",
 		"Import {{okcount}} issues successfully, {{errorcount}} failed.": "匯入 {{okcount}} 筆資料成功， {{errorcount}} 筆資料失敗",
 		"Import nothing": "找不到可匯入的資料",
