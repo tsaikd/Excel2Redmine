@@ -202,12 +202,10 @@ app
 
 		var field_filter_map = {
 			"string": function(field, value) {
-				value = "" + value;
 				value = value.trim();
 				return value ? value : undefined;
 			},
 			"bool": function(field, value) {
-				value = "" + value;
 				value = value.trim();
 				switch (value) {
 				case "1":
@@ -253,7 +251,6 @@ app
 				var ma;
 				var strdate;
 				var date;
-				value = "" + value;
 				value = value.trim();
 				if (ma = value.match(/(\d{4})[-/](\d{1,2})[-/](\d{1,2})/)) {
 					strdate = ma[1] + "-" + ma[2] + "-" + ma[3];
@@ -328,9 +325,6 @@ app
 			headers: [],
 			xinfo: {},
 			yinfo: {},
-			stat: {
-				errorcount: 0
-			},
 			xaxis: [],
 			yaxis: []
 		};
@@ -352,7 +346,7 @@ app
 		}
 		for (var i=1 ; i<=refy ; i++) {
 			sheet.yaxis.push(i);
-			sheet.yinfo[i] = {};
+			sheet.yinfo[i] = { errorcount: 0 };
 		}
 
 		formulae.forEach(function(cellraw) {
@@ -383,7 +377,7 @@ app
 			sheet.xinfo[x].exist = true;
 
 			sheet.yaxis.forEach(function(y) {
-				var data = sheet.data[x][y] = sheet.data[x][y] || {};
+				var data = sheet.data[x][y] = sheet.data[x][y] || { value: "" };
 				data.filtered = headerInfo.filter(headerInfo, data.value);
 				if (data.filtered === undefined) {
 					if (data.value == "") {
@@ -399,7 +393,7 @@ app
 					data.valid = true;
 				}
 				if (!data.valid) {
-					sheet.stat.errorcount++;
+					sheet.yinfo[y].errorcount++;
 				}
 			});
 		});

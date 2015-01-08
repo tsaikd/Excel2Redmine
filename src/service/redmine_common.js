@@ -12,7 +12,7 @@ app
 		var params;
 
 		opts = angular.extend({
-			method: "JSONP",
+			method: "GET",
 			url: "",
 			params: {},
 			data: ""
