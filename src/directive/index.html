@@ -8,6 +8,10 @@
 		<md-button ng-click="import($event)" class="md-raised md-primary" style="margin-left: 0.5em;" translate>Import</md-button>
 	</div>
 	<div layout="row">
+		<div ng-show="!wbmap[0]" style="position: relative;">
+			<i class="fa fa-long-arrow-up" style="margin-left: 60px; font-size: 72pt; color: red; -webkit-transform: rotate(-30deg); -moz-transform: rotate(-30deg); -o-transform: rotate(-30deg); transform: rotate(-30deg);"></i>
+			<span style="position: relative; font-size: 35pt; margin-left: 20px; bottom: -10px;" translate>Select excel file</span>
+		</div>
 		<md-tabs md-selected="selectedSheet" ng-show="wbmap[0]" md-align-tabs="bottom" layout-margin>
 			<md-tab ng-repeat="tab in wbmap" label="{{tab.name}}">
 				<md-content>
