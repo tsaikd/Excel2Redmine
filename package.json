@@ -1,6 +1,6 @@
 {
   "name": "Excel2Redmine",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Pure html tools to import excel file to redmine",
   "devDependencies": {
     "dateformat": ">=0",
