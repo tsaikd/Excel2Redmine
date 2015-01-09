@@ -1,8 +1,10 @@
 app
 
 .controller("indexCtrl"
-	, [       "$scope", "$state", "$mdToast", "$filter", "$q", "Redmine", "Loading", "localStorageService", "Excel"
-	, function($scope,   $state,   $mdToast,   $filter,   $q,   Redmine,   Loading,   localStorageService,   Excel) {
+	, [       "$scope", "$state", "$mdToast", "$mdDialog", "$filter", "$q", "$window"
+	, "Redmine", "Loading", "localStorageService", "Excel"
+	, function($scope,   $state,   $mdToast,   $mdDialog,   $filter,   $q,   $window
+	,  Redmine,   Loading,   localStorageService,   Excel) {
 
 	$scope.excelFile = [];
 	$scope.wbmap = [];
@@ -53,11 +55,11 @@ app
 	}
 
 	$scope.errMsg = function(data) {
-		if (data.data === undefined && data.status === 404) {
+		if ( (data.data === undefined && data.status === 404)
+			|| (data.data === null && data.status === 0) ) {
 			// redmine config incorrect
-			if (showErrorMessage("Connect to Redmine server failed, please check config.")) {
-				$state.go("config");
-			}
+			showErrorMessage("Connect to Redmine server failed, please check config.");
+			$state.go("config");
 			return;
 		}
 		if (data.message) {
@@ -71,7 +73,22 @@ app
 			}
 			return;
 		}
-		console.error("unknown error: " + data);
+
+		var title = $filter("translate")("Unknown ERROR, please post the following message to Github Issue");
+		var content = JSON.stringify(data, undefined, 2);
+		$mdDialog.show({
+			controller: "messageDialogCtrl",
+			templateUrl: "src/directive/messageDialog.html",
+			locals: {
+				param: {
+					title: title,
+					messages: content.split("\n")
+				}
+			}
+		}).then(function() {
+			$window.open("https://github.com/tsaikd/Excel2Redmine/issues");
+		});
+		console.error("unknown error: ", data);
 	};
 
 	$scope.projectData = {};

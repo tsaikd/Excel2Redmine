@@ -7,9 +7,11 @@ app
 .config(["$translateProvider", function($translateProvider) {
 
 	var zh_tw = {
+		"Cancel": "取消",
 		"Check": "檢查",
 		"Config": "設定",
 		"Import": "匯入",
+		"OK": "確定",
 		"Version": "版本",
 
 		// key
@@ -31,6 +33,7 @@ app
 		"Import nothing": "找不到可匯入的資料",
 		"Select excel file": "選擇 Excel 檔案",
 		"Unable to parse excel file, please check the file format is corrent.": "無法解析 Excel 檔案，請確認檔案格式是否正確。",
+		"Unknown ERROR, please post the following message to Github Issue": "未知的錯誤，請將下列訊息提交到 Github Issue 頁面",
 		"User guide": "使用者說明文件"
 	};
 

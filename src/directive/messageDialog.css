@@ -1,0 +1,17 @@
+.message-dialog .md-subheader {
+	background-color: #ebb;
+}
+.message-dialog .md-subheader {
+	margin: -24px -24px 0px -24px;
+}
+.message-dialog .md-subheader.md-sticky-clone {
+	margin-right: 0px;
+	margin-top: 0px;
+	box-shadow: 0px 2px 4px 0 rgba(0, 0, 0, 0.16);
+}
+.message-dialog .message {
+	margin-top: 5px;
+}
+.message-dialog .md-subheader:not(.md-sticky-no-effect):after {
+	right: 0px;
+}

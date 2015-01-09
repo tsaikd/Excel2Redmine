@@ -1,0 +1,12 @@
+<md-dialog class="message-dialog">
+	<md-content>
+		<md-subheader ng-show="param.title">{{param.title}}</md-subheader>
+		<div class="message">
+			<div ng-repeat="msg in param.messages track by $index" style="white-space: pre;">{{msg}}</div>
+		</div>
+	</md-content>
+	<div class="md-actions" layout="row">
+		<md-button ng-click="ok($event)" class="md-raised md-primary" translate>OK</md-button>
+		<md-button ng-click="cancel($event)" translate>Cancel</md-button>
+	</div>
+</md-dialog>
