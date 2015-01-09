@@ -5,6 +5,7 @@
 			ng-options="idx as project.fullname for (idx, project) in projectData.projects"
 			ng-model="projectData.selectIdx">
 		</select>
+		<md-button ng-click="checkImportedRow($event)" class="md-raised" style="margin-left: 0.5em;" translate>Check</md-button>
 		<md-button ng-click="import($event)" class="md-raised md-primary" style="margin-left: 0.5em;" translate>Import</md-button>
 	</div>
 	<div layout="row">

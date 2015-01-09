@@ -22,20 +22,22 @@ app
 			params = angular.extend({
 				callback: "JSON_CALLBACK"
 			}, opts.params);
-		}
 
-		// hack for jsonp
-		// http://stackoverflow.com/questions/16560843/json-callback-not-found-using-jsonp
-		var c = $window.angular.callbacks.counter.toString(36);
-		var ci = 0;
-		while ($window['angularcallbacks_' + c]) {
-			ci++;
-			c = ($window.angular.callbacks.counter + ci).toString(36);
+			// hack for jsonp
+			// http://stackoverflow.com/questions/16560843/json-callback-not-found-using-jsonp
+			var c = $window.angular.callbacks.counter.toString(36);
+			var ci = 0;
+			while ($window['angularcallbacks_' + c]) {
+				ci++;
+				c = ($window.angular.callbacks.counter + ci).toString(36);
+			}
+			$window['angularcallbacks_' + c] = function(data) {
+				$window.angular.callbacks['_' + c](data);
+				delete $window['angularcallbacks_' + c];
+			};
+		} else {
+			params = opts.params;
 		}
-		$window['angularcallbacks_' + c] = function(data) {
-			$window.angular.callbacks['_' + c](data);
-			delete $window['angularcallbacks_' + c];
-		};
 
 		$http({
 			method: opts.method,

@@ -14,6 +14,17 @@ app
 		return RedmineCommon.jsonp(opts);
 	};
 
+	RedmineIssue.prototype.exist = function(opts) {
+		opts = angular.extend({
+			url: "/issues.json"
+		}, opts);
+		opts.params = angular.extend({
+			limit: 1
+		}, opts.params);
+
+		return RedmineCommon.jsonp(opts);
+	};
+
 	RedmineIssue.prototype.status = function(opts) {
 		opts = angular.extend({
 			url: "/issue_statuses.json"

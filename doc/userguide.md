@@ -51,9 +51,10 @@ After configuration, you can use the tool now.
 		* valid data will display in `GREEN` background
 		* invalid data will display in `PINK` background
 		* warning data will display in `YELLOW` background, this case is occurring when field accepted data is different from parsed data, e.g. `% Done` field expected a integer, but excel input a float like 45.5
-5. Click `Import` to start to import data into your Redmine
+5. Click `Check` to check data is imported or not
+6. Click `Import` to start to import data into your Redmine
 	* each row will import as a issue
 	* row with any invalid data will skip
-6. Import result will display at the left hand side of excel
+7. Import result will display at the left hand side of excel
 	* success imported row will check the box in `GREEN` background
 	* failure imported row will check the box in `RED` background

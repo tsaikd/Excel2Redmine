@@ -103,6 +103,59 @@ app
 	});
 	$scope.reloadProjects();
 
+	$scope.checkImportedRow = function($event) {
+		var sheet = $scope.wbmap[$scope.selectedSheet];
+		if (!sheet || !sheet.headerMap["subject"]) {
+			$scope.errMsg({ message: "Check nothing" });
+			return;
+		}
+		var promises = [];
+		for (var i=1 ; i<sheet.yaxis.length ; i++) {
+			var y = sheet.yaxis[i];
+			if (sheet.yinfo[y].errorcount) {
+				continue;
+			}
+			var subject_x = sheet.headerMap["subject"].x;
+			var subject = sheet.data[subject_x][y].filtered;
+			var promise = Redmine.Issue.exist({
+				params: {
+					subject: subject
+				},
+				sheetyinfo: sheet.yinfo[y]
+			}).then(function(data) {
+				data.opts.sheetyinfo.created = !!(data.data.total_count > 0);
+				delete data.opts.sheetyinfo.error;
+				return data;
+			}, function(data) {
+				data.opts.sheetyinfo.error = "Error";
+				if (data.data && data.data.errors && data.data.errors.length) {
+					data.opts.sheetyinfo.error = data.data.errors.join("\n");
+				}
+				return data;
+			});
+			promises.push(promise);
+		}
+		$q.all(promises).then(function(data) {
+			var total = data.length;
+			var errorcount = data.filter(function(data) {
+				return data.status < 200 || data.status >= 400;
+			}).length;
+			var existcount = data.filter(function(data) {
+				return data.opts.sheetyinfo.created;
+			}).length;
+			$scope.errMsg({
+				message: "Check {{okcount}} issues successfully, {{errorcount}} failed, {{existcount}} issues existed.",
+				params: {
+					okcount: total - errorcount,
+					errorcount: errorcount,
+					existcount: existcount
+				}
+			});
+		}, function(data) {
+			console.error("unexpected error:", data);
+		});
+	};
+
 	$scope.import = function($event) {
 		var sheet = $scope.wbmap[$scope.selectedSheet];
 		if (!sheet) {

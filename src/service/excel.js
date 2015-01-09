@@ -330,6 +330,7 @@ app
 			name: sheetName,
 			data: {},
 			headers: [],
+			headerMap: {},
 			xinfo: {},
 			yinfo: {},
 			xaxis: [],
@@ -376,11 +377,13 @@ app
 			if (!headerInfo) {
 				return;
 			}
-			sheet.headers.push({
+			var header = {
 				key: headerInfo.key,
 				x: x,
 				info: headerInfo
-			});
+			};
+			sheet.headers.push(header);
+			sheet.headerMap[headerInfo.key] = header;
 			sheet.xinfo[x].exist = true;
 
 			sheet.yaxis.forEach(function(y) {
