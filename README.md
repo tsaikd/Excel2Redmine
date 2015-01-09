@@ -28,3 +28,8 @@ Excel2Redmine
 ## Screenshot
 
 ![](doc/screenshot.png)
+
+## Tips
+
+* Config page support setup by URL parameters, the following example will setup url, apikey, and then go to index page
+	* http://tsaikd.org/Excel2Redmine/#/config?url=http://redmine.my.company.com&apikey=c6380744e7ec22699d0b4a9b9aa590bfbbe192d6&redirect=index
