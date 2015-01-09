@@ -32,6 +32,7 @@
 		<script src="lib/js-xlsx/dist/xlsx.js"></script>
 
 		<script src="src/config/app.js"></script>
+		<script src="src/config/ga.js"></script>
 		<script src="src/config/locale.js"></script>
 		<script src="src/config/route.js"></script>
 		<script src="src/directive/config.js"></script>
@@ -55,7 +56,7 @@
 	</head>
 	<body ng-controller="IndexCtrl" layout="row" style="overflow: hidden;">
 		<div layout="column" layout-margin class="md-whiteframe-z1">
-			<md-button href="#/">
+			<md-button ng-click="go($event, 'index')" href="#/">
 				<div layout="row">
 					<img src="favicon.ico" style="margin-right: 10px;" />
 					<div layout="column" layout-align="space-around">
@@ -66,7 +67,14 @@
 			<md-content flex style="margin-top: 20px;">
 				<div layout="column">
 					<md-button ng-click="showLangBottomSheet($event)">Language</md-button>
-					<md-button href="#/config" translate>Config</md-button>
+					<md-button ng-click="go($event, 'config')" href="#/config">
+						<div layout="row" layout-align="center">
+							<i class="fa fa-cogs" style="margin-right: 10px; font-size: 1.3em;"></i>
+							<div layout="column" layout-align="space-around">
+								<span translate>Config</span>
+							</div>
+						</div>
+					</md-button>
 				</div>
 			</md-content>
 			<div style="text-align: center; margin-bottom: 0.3em;">

@@ -121,6 +121,8 @@ app
 	$scope.reloadProjects();
 
 	$scope.checkImportedRow = function($event) {
+		var startTime = new Date().getTime();
+		$event && ga("send", "event", "button", "click", "checkImportedRow");
 		var sheet = $scope.wbmap[$scope.selectedSheet];
 		if (!sheet || !sheet.headerMap["subject"]) {
 			$scope.errMsg({ message: "Check nothing" });
@@ -168,12 +170,16 @@ app
 					existcount: existcount
 				}
 			});
+			ga("send", "timing", "import", "checkImportedRow", new Date().getTime() - startTime, "Success");
 		}, function(data) {
+			ga("send", "timing", "import", "checkImportedRow", new Date().getTime() - startTime, "Failure");
 			console.error("unexpected error:", data);
 		});
 	};
 
 	$scope.import = function($event) {
+		var startTime = new Date().getTime();
+		$event && ga("send", "event", "button", "click", "import");
 		var sheet = $scope.wbmap[$scope.selectedSheet];
 		if (!sheet) {
 			$scope.errMsg({ message: "Import nothing" });
@@ -236,7 +242,9 @@ app
 					errorcount: errorcount
 				}
 			});
+			ga("send", "timing", "import", "import excel", new Date().getTime() - startTime, "Success");
 		}, function(data) {
+			ga("send", "timing", "import", "import excel", new Date().getTime() - startTime, "Failure");
 			console.error("unexpected error:", data);
 		});
 	};

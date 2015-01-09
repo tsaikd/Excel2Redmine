@@ -443,6 +443,7 @@ app
 
 	Excel.prototype.parseFile = function(file, projectId) {
 		var deferred = $q.defer();
+		var startTime = new Date().getTime();
 
 		var reader = new FileReader();
 		reader.onload = function(e) {
@@ -451,8 +452,10 @@ app
 			try {
 				wb = XLSX.read(data, {type: "binary"});
 				handleWorkbook(wb, projectId).then(function(data) {
+					ga("send", "timing", "excel", "parseFile", new Date().getTime() - startTime, "Success");
 					deferred.resolve(data);
 				}, function(data) {
+					ga("send", "timing", "excel", "parseFile", new Date().getTime() - startTime, "Failure");
 					deferred.reject(data);
 				});
 			} catch(e) {

@@ -1,4 +1,8 @@
 
+a:link {
+	color: initial;
+}
+
 .table-border {
 	border-collapse: collapse;
 }

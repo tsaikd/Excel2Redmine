@@ -10,6 +10,7 @@ app
 		var $scope = this;
 		var deferred = $q.defer();
 		var params;
+		var startTime = new Date().getTime();
 
 		opts = angular.extend({
 			method: "GET",
@@ -49,6 +50,7 @@ app
 			}
 		})
 		.success(function(data, status, headers, config) {
+			ga("send", "timing", "redmine api", opts.url, new Date().getTime() - startTime, "Success");
 			deferred.resolve({
 				data: data,
 				status: status,
@@ -58,6 +60,7 @@ app
 			});
 		})
 		.error(function(data, status, headers, config) {
+			ga("send", "timing", "redmine api", opts.url, new Date().getTime() - startTime, "Failure");
 			deferred.reject({
 				data: data,
 				status: status,
