@@ -2,9 +2,9 @@ app
 
 .controller("indexCtrl"
 	, [       "$scope", "$state", "$mdToast", "$mdDialog", "$filter", "$q", "$window"
-	, "Redmine", "Loading", "localStorageService", "Excel"
+	, "Redmine", "Loading", "localStorageService", "Config", "Excel"
 	, function($scope,   $state,   $mdToast,   $mdDialog,   $filter,   $q,   $window
-	,  Redmine,   Loading,   localStorageService,   Excel) {
+	,  Redmine,   Loading,   localStorageService,   Config,   Excel) {
 
 	$scope.excelFile = [];
 	$scope.wbmap = [];
@@ -120,6 +120,68 @@ app
 	});
 	$scope.reloadProjects();
 
+	function genExcelRowIssue(sheet, y, fieldMap) {
+		var issue = {
+			custom_fields: []
+		};
+
+		var idx = +$scope.projectData.selectIdx;
+		issue.project_id = +$scope.projectData.projects[idx].id;
+
+		angular.forEach(Config.defFieldVal, function(fieldVal) {
+			issue[fieldVal.field] = fieldVal.value;
+		});
+
+		var defCustomField = {};
+		angular.forEach(Config.defCustomFieldVal, function(fieldVal) {
+			defCustomField[fieldVal.field] = fieldVal.value;
+		});
+
+		sheet.headers.forEach(function(header) {
+			var x = header.x;
+			if (sheet.data[x][y] && sheet.data[x][y].filtered !== undefined) {
+				if (header.key == "custom_fields") {
+					issue["custom_fields"].push({
+						id: header.info.id,
+						value: sheet.data[x][y].filtered
+					});
+					delete defCustomField[header.info.name];
+				} else {
+					issue[header.key] = sheet.data[x][y].filtered;
+				}
+			}
+		});
+
+		angular.forEach(defCustomField, function(value, field) {
+			var fieldInfo = fieldMap[field];
+			if (fieldInfo) {
+				issue["custom_fields"].push({
+					id: fieldInfo.id,
+					value: value
+				});
+			}
+		});
+
+		return issue;
+	}
+
+	$scope.fieldMapData = {};
+	$scope.reloadFieldMap = function() {
+		var idx = +$scope.projectData.selectIdx;
+		if (isNaN(idx)) {
+			return;
+		}
+		var project_id = +$scope.projectData.projects[idx].id;
+		if (!isNaN(project_id)) {
+			Excel.genFieldMap(project_id).then(function(fieldMap) {
+				$scope.fieldMapData.fieldMap = fieldMap;
+			});
+		}
+	};
+	$scope.$watch("projectData.selectIdx", function() {
+		$scope.reloadFieldMap();
+	});
+
 	$scope.checkImportedRow = function($event) {
 		var startTime = new Date().getTime();
 		$event && ga("send", "event", "button", "click", "checkImportedRow");
@@ -136,9 +198,12 @@ app
 			if (sheet.yinfo[y].errorcount) {
 				continue;
 			}
+
+			var issue = genExcelRowIssue(sheet, y, $scope.fieldMapData.fieldMap);
+
 			var subject_x = sheet.headerMap["subject"].x;
 			var subject = sheet.data[subject_x][y].filtered;
-			var promise = Redmine.Issue.exist({
+			var promise =  Redmine.Issue.exist({
 				params: {
 					project_id: project_id,
 					subject: subject
@@ -155,8 +220,10 @@ app
 				}
 				return data;
 			});
+
 			promises.push(promise);
 		}
+
 		$q.all(promises).then(function(data) {
 			var total = data.length;
 			var errorcount = data.filter(function(data) {
@@ -194,26 +261,12 @@ app
 			if (sheet.yinfo[y].errorcount) {
 				continue;
 			}
-			var issue = {};
-			sheet.headers.forEach(function(header) {
-				var x = header.x;
-				if (sheet.data[x][y] && sheet.data[x][y].filtered !== undefined) {
-					if (header.key == "custom_fields") {
-						issue["custom_fields"] = issue["custom_fields"] || [];
-						issue["custom_fields"].push({
-							id: header.info.id,
-							value: sheet.data[x][y].filtered
-						});
-					} else {
-						issue[header.key] = sheet.data[x][y].filtered;
-					}
-				}
-			});
 			if (sheet.yinfo[y].created && !sheet.yinfo[y].error) {
 				continue;
 			}
-			var idx = +$scope.projectData.selectIdx;
-			issue.project_id = +$scope.projectData.projects[idx].id;
+
+			var issue = genExcelRowIssue(sheet, y, $scope.fieldMapData.fieldMap);
+
 			var promise = Redmine.Issue.create({
 				data: {
 					issue: issue

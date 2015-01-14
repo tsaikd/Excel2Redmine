@@ -5,6 +5,15 @@ app
 
 	$urlRouterProvider.otherwise("/");
 
+	var configParams = [
+		"url",
+		"apikey",
+		"checkRedmineCustomFieldListInClient",
+		"defFieldVal",
+		"defCustomFieldVal",
+		"redirect"
+	];
+
 	$stateProvider
 		.state("index", {
 			url: "/",
@@ -12,7 +21,7 @@ app
 			controller: "indexCtrl"
 		})
 		.state("config", {
-			url: "/config?url&apikey&redirect",
+			url: "/config?" + configParams.join("&"),
 			templateUrl: "src/directive/config.html",
 			controller: "configCtrl"
 		})

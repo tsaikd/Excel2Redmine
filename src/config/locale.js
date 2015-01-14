@@ -13,6 +13,12 @@ app
 		"Import": "匯入",
 		"OK": "確定",
 		"Version": "版本",
+		"Basic config": "基本設定",
+		"Extra config": "額外設定",
+		"Import field default value": "匯入欄位預設值",
+		"Built-in field": "內建欄位",
+		"Custom field": "自訂欄位",
+		"Default value": "預設值",
 
 		// key
 		"subject": "主旨",

@@ -76,7 +76,14 @@ app
 		return deferred.promise;
 	}
 
-	function genFieldInfos(projectId) {
+	function getDefFieldValue(defFieldValMap, key, defvalue) {
+		if (defFieldValMap[key]) {
+			return defFieldValMap[key].value;
+		}
+		return defvalue;
+	}
+
+	function genFieldInfos(projectId, defFieldValMap) {
 		var deferred = $q.defer();
 
 		$q.all([
@@ -89,18 +96,21 @@ app
 					key: "subject",
 					names: ["Subject", "主旨"],
 					field_format: "string",
+					default_value: getDefFieldValue(defFieldValMap, "subject"),
 					nullable: false
 				},
 				{
 					key: "description",
 					names: ["Description", "概述"],
 					field_format: "string",
+					default_value: getDefFieldValue(defFieldValMap, "description"),
 					nullable: true
 				},
 				{
 					key: "tracker_id",
 					names: ["Tracker", "追蹤標籤"],
 					field_format: "enum",
+					default_value: getDefFieldValue(defFieldValMap, "tracker_id"),
 					nullable: false,
 					possible_values: data["trackers"]
 				},
@@ -108,6 +118,7 @@ app
 					key: "status_id",
 					names: ["Status", "狀態"],
 					field_format: "enum",
+					default_value: getDefFieldValue(defFieldValMap, "status_id"),
 					nullable: false,
 					possible_values: data["issue_statuses"]
 				},
@@ -115,6 +126,7 @@ app
 					key: "priority_id",
 					names: ["Priority", "優先權"],
 					field_format: "enum",
+					default_value: getDefFieldValue(defFieldValMap, "priority_id"),
 					nullable: false,
 					possible_values: data["issue_priorities"]
 				},
@@ -122,18 +134,21 @@ app
 					key: "start_date",
 					names: ["Start Date", "開始日期"],
 					field_format: "date",
+					default_value: getDefFieldValue(defFieldValMap, "start_date"),
 					nullable: true
 				},
 				{
 					key: "due_date",
 					names: ["Due Date", "完成日期"],
 					field_format: "date",
+					default_value: getDefFieldValue(defFieldValMap, "due_date"),
 					nullable: true
 				},
 				{
 					key: "category_id",
 					names: ["Category", "分類"],
 					field_format: "enum",
+					default_value: getDefFieldValue(defFieldValMap, "category_id"),
 					nullable: true,
 					possible_values: data["issue_categories"]
 				},
@@ -141,6 +156,7 @@ app
 					key: "fixed_version_id",
 					names: ["Target version", "版本"],
 					field_format: "enum",
+					default_value: getDefFieldValue(defFieldValMap, "fixed_version_id"),
 					nullable: true,
 					possible_values: data["versions"]
 				},
@@ -148,6 +164,7 @@ app
 					key: "assigned_to_id",
 					names: ["Assignee", "分派給"],
 					field_format: "enum",
+					default_value: getDefFieldValue(defFieldValMap, "assigned_to_id"),
 					nullable: true,
 					possible_values: data["memberships"].map(function(membership) {
 						return membership.user;
@@ -157,12 +174,14 @@ app
 					key: "parent_issue_id",
 					names: ["Parent task", "父問題"],
 					field_format: "int",
+					default_value: getDefFieldValue(defFieldValMap, "parent_issue_id"),
 					nullable: true
 				},
 				{
 					key: "watcher_user_ids",
 					names: ["Watchers", "監看者"],
 					field_format: "enum",
+					default_value: getDefFieldValue(defFieldValMap, "watcher_user_ids"),
 					nullable: true,
 					possible_values: data["memberships"].map(function(membership) {
 						return membership.user;
@@ -172,27 +191,35 @@ app
 					key: "is_private",
 					names: ["Private", "私人"],
 					field_format: "bool",
+					default_value: getDefFieldValue(defFieldValMap, "is_private"),
 					nullable: true
 				},
 				{
 					key: "estimated_hours",
 					names: ["Estimated time", "預估工時"],
 					field_format: "int",
+					default_value: getDefFieldValue(defFieldValMap, "estimated_hours"),
 					nullable: true
 				},
 				{
 					key: "done_ratio",
 					names: ["% Done", "完成百分比"],
 					field_format: "int",
+					default_value: getDefFieldValue(defFieldValMap, "done_ratio"),
 					nullable: true
 				}
 			];
 			data["custom_fields"].forEach(function(field) {
+				var defvalue = {};
+				if (getDefFieldValue(defFieldValMap, field.name) !== undefined) {
+					defvalue.default_value = getDefFieldValue(defFieldValMap, field.name);
+				}
+
 				fieldInfos.push(angular.extend({}, field, {
 					key: "custom_fields",
 					names: [field.name],
 					nullable: true
-				}));
+				}, defvalue));
 			});
 			deferred.resolve(fieldInfos);
 		}, function(data) {
@@ -209,17 +236,25 @@ app
 		var field_filter_map = {
 			"string": function(field, value) {
 				value = value.trim();
-				return value ? value : undefined;
+				if (value) {
+					return value;
+				}
+				return field.default_value || undefined;
 			},
 			"bool": function(field, value) {
-				value = value.trim();
+				value = value.trim().toLowerCase() || field.default_value;
 				switch (value) {
 				case "1":
 				case "true":
+				case "yes":
+				case "y":
+				case "v":
 				case "checked":
 					return true;
 				case "0":
 				case "false":
+				case "no":
+				case "n":
 				case "":
 					return false;
 				}
@@ -227,7 +262,14 @@ app
 			},
 			"int": function(field, value) {
 				value = parseInt(value);
-				return isNaN(value) ? undefined : value;
+				if (!isNaN(value)) {
+					return value;
+				}
+				value = parseInt(field.default_value);
+				if (!isNaN(value)) {
+					return value;
+				}
+				return undefined;
 			},
 			"list": function(field, value) {
 				if (Config.checkRedmineCustomFieldListInClient) {
@@ -236,21 +278,31 @@ app
 							return value;
 						}
 					}
-					return undefined;
+					if (value) {
+						return undefined;
+					}
+					return field.default_value || undefined;
 				} else {
-					return value;
+					return value || field.default_value || undefined;
 				}
 			},
 			"enum": function(field, value) {
 				var enumArray = field.possible_values;
-				if (!value || !enumArray || !enumArray.length) {
+				if (!enumArray || !enumArray.length) {
 					return undefined;
 				}
-				for (var i=0 ; i<enumArray.length ; i++) {
-					var enumInfo = enumArray[i];
-					if (value == enumInfo.name) {
-						return +enumInfo.id;
+				if (value) {
+					for (var i=0 ; i<enumArray.length ; i++) {
+						var enumInfo = enumArray[i];
+						if (value == enumInfo.name) {
+							return +enumInfo.id;
+						}
 					}
+					return undefined;
+				}
+				value = parseInt(field.default_value);
+				if (!isNaN(value)) {
+					return value;
 				}
 				return undefined;
 			},
@@ -258,7 +310,7 @@ app
 				var ma;
 				var strdate;
 				var date;
-				value = value.trim();
+				value = value.trim() || field.default_value || "";
 				if (ma = value.match(/(\d{4})[-/](\d{1,2})[-/](\d{1,2})/)) {
 					strdate = ma[1] + "-" + ma[2] + "-" + ma[3];
 				} else if (ma = value.match(/(\d{1,2})\/(\d{1,2})\/(\d{2})/)) {
@@ -274,7 +326,8 @@ app
 			}
 		};
 
-		genFieldInfos(projectId).then(function(fieldInfos){
+		var defFieldValMap = Config.defFieldValMap;
+		genFieldInfos(projectId, defFieldValMap).then(function(fieldInfos){
 			fieldInfos.forEach(function(fieldInfo) {
 				fieldInfo.filter = field_filter_map[fieldInfo["field_format"]];
 				if (!fieldInfo.filter) {
@@ -291,6 +344,7 @@ app
 
 		return deferred.promise;
 	}
+	Excel.prototype.genFieldMap = genFieldMap;
 
 	function x_axis_to_num(x) {
 		x = x.toUpperCase();
@@ -368,6 +422,8 @@ app
 			};
 		});
 
+		var defFieldValMap = Config.defFieldValMap;
+
 		// parse valid header row
 		sheet.xaxis.forEach(function(x) {
 			if (!sheet.data[x][1]) {
@@ -386,7 +442,7 @@ app
 			sheet.headerMap[headerInfo.key] = header;
 			sheet.xinfo[x].exist = true;
 
-			sheet.yaxis.forEach(function(y) {
+			sheet.yaxis.slice(1).forEach(function(y) {
 				var data = sheet.data[x][y] = sheet.data[x][y] || { value: "" };
 				data.filtered = headerInfo.filter(headerInfo, data.value);
 				if (data.filtered === undefined) {
@@ -404,6 +460,9 @@ app
 					case "date":
 					case "enum":
 					case "list":
+						if (!data.value) {
+							data.warn = true;
+						}
 						break;
 					default:
 						if (data.value != data.filtered) {
