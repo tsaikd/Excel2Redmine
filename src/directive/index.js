@@ -129,6 +129,8 @@ app
 			return;
 		}
 		var promises = [];
+		var idx = +$scope.projectData.selectIdx;
+		var project_id = +$scope.projectData.projects[idx].id;
 		for (var i=1 ; i<sheet.yaxis.length ; i++) {
 			var y = sheet.yaxis[i];
 			if (sheet.yinfo[y].errorcount) {
@@ -138,6 +140,7 @@ app
 			var subject = sheet.data[subject_x][y].filtered;
 			var promise = Redmine.Issue.exist({
 				params: {
+					project_id: project_id,
 					subject: subject
 				},
 				sheetyinfo: sheet.yinfo[y]
