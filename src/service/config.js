@@ -27,6 +27,17 @@ app
 				value: ""
 			}
 		*/
+		],
+		checkIssueFields: [
+		/*
+			"FIELD_NAME"
+		*/
+			"subject"
+		],
+		checkIssueCustomFields: [
+		/*
+			"FIELD_NAME"
+		*/
 		]
 	};
 
@@ -50,6 +61,29 @@ app
 			return result;
 		}
 	});
+
+	Config.prototype.getCheckIssueFields = function() {
+		var result = angular.copy(this.checkIssueFields);
+		result = result.map(function(field) {
+			return field.trim();
+		}).filter(function(field) {
+			return !!field;
+		});
+		if (result.length < 1) {
+			result = angular.copy(defConf.checkIssueFields);
+		}
+		return result;
+	};
+
+	Config.prototype.getCheckIssueCustomFields = function() {
+		var result = angular.copy(this.checkIssueCustomFields);
+		result = result.map(function(field) {
+			return field.trim();
+		}).filter(function(field) {
+			return !!field;
+		});
+		return result;
+	};
 
 	angular.forEach(defConf, function(value, key) {
 		$scope.Config[key] = angular.copy(localStorageService.get(key) || value);

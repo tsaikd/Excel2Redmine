@@ -1,11 +1,18 @@
 <div layout="column" layout-align="center start" class="config" style="margin-left: 15px;">
-	<md-content style="height: 100vh;">
-		<md-card>
+	<md-content style="height: 100vh; padding-bottom: 1em;">
+		<md-card layout-padding>
 			<md-subheader translate>Basic config</md-subheader>
-			<md-text-float label="Redmine URL" ng-model="Config.url" class="row"></md-text-float>
-			<md-text-float label="API Key" ng-model="Config.apikey" class="row"></md-text-float>
+			<md-input-container>
+				<label>Redmine URL</label>
+				<input ng-model="Config.url">
+			</md-input-container>
+			<md-input-container>
+				<label>API Key</label>
+				<input ng-model="Config.apikey">
+			</md-input-container>
 		</md-card>
-		<md-card>
+
+		<md-card layout-padding style="padding-right: 1.5em;">
 			<md-subheader translate>Import field default value</md-subheader>
 			<table>
 				<thead>
@@ -17,13 +24,21 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="fieldVal in Config.defFieldVal">
-						<td style="padding: 0em 1em;"><md-text-float ng-model="fieldVal.field"></md-text-float></td>
-						<td style="padding: 0em 1em;"><md-text-float ng-model="fieldVal.value"></md-text-float></td>
+						<td style="padding: 0em 1em;">
+							<md-input-container>
+								<input ng-model="fieldVal.field">
+							</md-input-container>
+						</td>
+						<td style="padding: 0em 1em;">
+							<md-input-container>
+								<input ng-model="fieldVal.value">
+							</md-input-container>
+						</td>
 						<td style="white-space: nowrap;">
-							<md-button ng-click="delFieldVal($event, Config.defFieldVal, $index)" aria-label="del">
+							<md-button ng-click="delFieldVal($event, Config.defFieldVal, $index, {})" aria-label="del">
 								<i class="fa fa-minus-circle" style="color: rgba(187, 106, 106, 1); font-size: 1.5em;"></i>
 							</md-button>
-							<md-button ng-click="addFieldVal($event, Config.defFieldVal)" ng-show="$index === Config.defFieldVal.length - 1" aria-label="add">
+							<md-button ng-click="addFieldVal($event, Config.defFieldVal, $index, {})" aria-label="add">
 								<i class="fa fa-plus-circle" style="color: rgba(102, 187, 106, 0.87); font-size: 1.5em;"></i>
 							</md-button>
 						</td>
@@ -40,13 +55,21 @@
 				</thead>
 				<tbody>
 					<tr ng-repeat="fieldVal in Config.defCustomFieldVal">
-						<td style="padding: 0em 1em;"><md-text-float ng-model="fieldVal.field"></md-text-float></td>
-						<td style="padding: 0em 1em;"><md-text-float ng-model="fieldVal.value"></md-text-float></td>
+						<td style="padding: 0em 1em;">
+							<md-input-container>
+								<input ng-model="fieldVal.field">
+							</md-input-container>
+						</td>
+						<td style="padding: 0em 1em;">
+							<md-input-container>
+								<input ng-model="fieldVal.value">
+							</md-input-container>
+						</td>
 						<td style="white-space: nowrap;">
-							<md-button ng-click="delFieldVal($event, Config.defCustomFieldVal, $index)" aria-label="del">
+							<md-button ng-click="delFieldVal($event, Config.defCustomFieldVal, $index, {})" aria-label="del">
 								<i class="fa fa-minus-circle" style="color: rgba(187, 106, 106, 1); font-size: 1.5em;"></i>
 							</md-button>
-							<md-button ng-click="addFieldVal($event, Config.defCustomFieldVal)" ng-show="$index === Config.defCustomFieldVal.length - 1" aria-label="add">
+							<md-button ng-click="addFieldVal($event, Config.defCustomFieldVal, $index, {})" aria-label="add">
 								<i class="fa fa-plus-circle" style="color: rgba(102, 187, 106, 0.87); font-size: 1.5em;"></i>
 							</md-button>
 						</td>
@@ -54,10 +77,66 @@
 				</tbody>
 			</table>
 		</md-card>
-		<md-card>
+
+		<md-card layout-padding>
+			<md-subheader translate>Check issue by fields</md-subheader>
+			<table>
+				<thead>
+					<tr>
+						<th translate>Built-in field</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="fieldVal in Config.checkIssueFields track by $index">
+						<td style="padding: 0em 1em;">
+							<md-input-container>
+								<input ng-model="Config.checkIssueFields[$index]">
+							</md-input-container>
+						</td>
+						<td style="white-space: nowrap;">
+							<md-button ng-click="delFieldVal($event, Config.checkIssueFields, $index, 'subject')" aria-label="del">
+								<i class="fa fa-minus-circle" style="color: rgba(187, 106, 106, 1); font-size: 1.5em;"></i>
+							</md-button>
+							<md-button ng-click="addFieldVal($event, Config.checkIssueFields, $index, '')" aria-label="add">
+								<i class="fa fa-plus-circle" style="color: rgba(102, 187, 106, 0.87); font-size: 1.5em;"></i>
+							</md-button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<table>
+				<thead>
+					<tr>
+						<th translate>Custom field</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="fieldVal in Config.checkIssueCustomFields track by $index">
+						<td style="padding: 0em 1em;">
+							<md-input-container>
+								<input ng-model="Config.checkIssueCustomFields[$index]">
+							</md-input-container>
+						</td>
+						<td style="white-space: nowrap;">
+							<md-button ng-click="delFieldVal($event, Config.checkIssueCustomFields, $index, '')" aria-label="del">
+								<i class="fa fa-minus-circle" style="color: rgba(187, 106, 106, 1); font-size: 1.5em;"></i>
+							</md-button>
+							<md-button ng-click="addFieldVal($event, Config.checkIssueCustomFields, $index, '')" aria-label="add">
+								<i class="fa fa-plus-circle" style="color: rgba(102, 187, 106, 0.87); font-size: 1.5em;"></i>
+							</md-button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</md-card>
+
+		<md-card layout-padding>
 			<md-subheader translate>Extra config</md-subheader>
 			<md-checkbox ng-model="Config.checkRedmineCustomFieldListInClient"><span translate>Check Redmine Custom Field List</span></md-checkbox>
 		</md-card>
+
 		<div style="height: 2em;"></div>
 		<md-button href="https://github.com/tsaikd/Excel2Redmine/blob/master/doc/userguide.md" target="_blank" class="md-raised" translate>User guide</md-button>
 	</md-content>

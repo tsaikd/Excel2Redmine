@@ -162,6 +162,10 @@ app
 			}
 		});
 
+		if (issue["custom_fields"].length < 1) {
+			delete issue["custom_fields"];
+		}
+
 		return issue;
 	}
 
@@ -202,6 +206,8 @@ app
 		var promises = [];
 		var idx = +$scope.projectData.selectIdx;
 		var project_id = +$scope.projectData.projects[idx].id;
+		var checkIssueFields = Config.getCheckIssueFields();
+		var checkIssueCustomFields = Config.getCheckIssueCustomFields();
 		for (var i=1 ; i<sheet.yaxis.length ; i++) {
 			var y = sheet.yaxis[i];
 			if (sheet.yinfo[y].errorcount) {
@@ -212,11 +218,27 @@ app
 
 			var subject_x = sheet.headerMap["subject"].x;
 			var subject = sheet.data[subject_x][y].filtered;
+			var params = {
+				project_id: project_id,
+			};
+			checkIssueFields.forEach(function(field) {
+				if (!sheet.headerMap[field]) {
+					return;
+				}
+				var field_x = sheet.headerMap[field].x;
+				params[field] = sheet.data[field_x][y].filtered;
+			});
+			checkIssueCustomFields.forEach(function(field) {
+				if (!sheet.headerMap["custom_fields"][field]) {
+					return;
+				}
+				var field_x = sheet.headerMap["custom_fields"][field].x;
+				var cf_id = sheet.headerMap["custom_fields"][field].info.id;
+				var cf_key = "cf_" + cf_id;
+				params[cf_key] = sheet.data[field_x][y].filtered;
+			});
 			var promise =  Redmine.Issue.exist({
-				params: {
-					project_id: project_id,
-					subject: subject
-				},
+				params: params,
 				sheetyinfo: sheet.yinfo[y]
 			}).then(function(data) {
 				data.opts.sheetyinfo.created = !!(data.data.total_count > 0);

@@ -6,12 +6,16 @@ app
 
 	$scope.Config = Config;
 
-	if (Config.defFieldVal.length < 1) {
-		Config.defFieldVal.push({});
+	function ensureArrayNotEmpty(arrCheck, elem) {
+		if (arrCheck.length < 1) {
+			arrCheck.push(elem);
+		}
 	}
-	if (Config.defCustomFieldVal.length < 1) {
-		Config.defCustomFieldVal.push({});
-	}
+
+	ensureArrayNotEmpty(Config.defFieldVal, {});
+	ensureArrayNotEmpty(Config.defCustomFieldVal, {});
+	ensureArrayNotEmpty(Config.checkIssueFields, "");
+	ensureArrayNotEmpty(Config.checkIssueCustomFields, "");
 
 	angular.forEach(Config.defConf, function(value, key) {
 		if ($stateParams[key]) {
@@ -23,15 +27,13 @@ app
 		}
 	});
 
-	$scope.delFieldVal = function($event, fieldVals, idx) {
-		fieldVals.splice(idx, 1);
-		if (fieldVals.length < 1) {
-			fieldVals.push({});
-		}
+	$scope.addFieldVal = function($event, fieldVals, idx, elem) {
+		fieldVals.splice(idx+1, 0, elem);
 	};
 
-	$scope.addFieldVal = function($event, fieldVals) {
-		fieldVals.push({});
+	$scope.delFieldVal = function($event, fieldVals, idx, elem) {
+		fieldVals.splice(idx, 1);
+		ensureArrayNotEmpty(fieldVals, elem);
 	};
 
 	if ($stateParams["redirect"]) {

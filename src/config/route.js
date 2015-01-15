@@ -11,6 +11,8 @@ app
 		"checkRedmineCustomFieldListInClient",
 		"defFieldVal",
 		"defCustomFieldVal",
+		"checkIssueFields",
+		"checkIssueCustomFields",
 		"redirect"
 	];
 

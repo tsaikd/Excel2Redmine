@@ -384,7 +384,9 @@ app
 			name: sheetName,
 			data: {},
 			headers: [],
-			headerMap: {},
+			headerMap: {
+				custom_fields: {}
+			},
 			xinfo: {},
 			yinfo: {},
 			xaxis: [],
@@ -439,7 +441,11 @@ app
 				info: headerInfo
 			};
 			sheet.headers.push(header);
-			sheet.headerMap[headerInfo.key] = header;
+			if (headerInfo.key == "custom_fields") {
+				sheet.headerMap["custom_fields"][headerInfo.name] = header;
+			} else {
+				sheet.headerMap[headerInfo.key] = header;
+			}
 			sheet.xinfo[x].exist = true;
 
 			sheet.yaxis.slice(1).forEach(function(y) {
