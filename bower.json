@@ -4,7 +4,7 @@
   "description": "Pure html tools to import excel file to redmine",
   "dependencies": {
     "angular": "*",
-    "angular-material": "*",
+    "angular-material": ">=0.7.0-rc",
     "angular-translate": "2.4.2",
     "angular-local-storage": "*",
     "angular-ui-router": "*",
