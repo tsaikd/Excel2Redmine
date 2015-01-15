@@ -173,9 +173,18 @@ app
 		}
 		var project_id = +$scope.projectData.projects[idx].id;
 		if (!isNaN(project_id)) {
-			Excel.genFieldMap(project_id).then(function(fieldMap) {
-				$scope.fieldMapData.fieldMap = fieldMap;
-			});
+			(function(project) {
+				Excel.genFieldMap(project_id).then(function(fieldMap) {
+					$scope.fieldMapData.fieldMap = fieldMap;
+				}, function(data) {
+					$scope.errMsg({
+						message: "{{project.name}}: Get project info failed",
+						params: {
+							project: project
+						}
+					});
+				});
+			})($scope.projectData.projects[idx]);
 		}
 	};
 	$scope.$watch("projectData.selectIdx", function() {
