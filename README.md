@@ -20,6 +20,8 @@ Excel2Redmine
 		* check `Enable JSONP support`
 * Install [Redmine CORS][] Plugin
 	* See [official wiki](http://www.redmine.org/projects/redmine/wiki/Plugins) for more information
+* WARNING
+	* Your [Redmine][] account should have the `admin` privileged, because of the [Redmine][] REST API [Custom Fields](http://www.redmine.org/projects/redmine/wiki/Rest_CustomFields)
 
 ## Excel2Redmine Usage
 
